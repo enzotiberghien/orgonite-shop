@@ -16,9 +16,6 @@ app.use(express.urlencoded({ extended: true }));
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
-app.use(express.static(path.join(__dirname, "../frontend/dist")))
-app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "../", "frontend", "dist", "index.html")))
-
 
 app.post('/create-checkout-session', async (req, res) => {
   const { items } = req.body;
@@ -79,5 +76,8 @@ app.post('/create-checkout-session', async (req, res) => {
 
   res.json({ id: session.id });
 });
+
+app.use(express.static(path.join(__dirname, "../frontend/dist")))
+app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "../", "frontend", "dist", "index.html")))
 
 app.listen(5000, () => console.log(`Server started on port: ${5000}`))

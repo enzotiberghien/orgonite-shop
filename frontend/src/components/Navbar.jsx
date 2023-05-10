@@ -42,7 +42,7 @@ const Navbar = () => {
       };
     });
 
-    const response = await fetch('/create-checkout-session', {
+    const response = await fetch('https://orgonite-40.onrender.com/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
