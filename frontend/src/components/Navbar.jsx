@@ -220,7 +220,7 @@ const Navbar = () => {
                               e.preventDefault()
                               onClickCheckout(e)
                             }}
-                            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                            className="flex items-center justify-center rounded-md border border-transparent bg-pink-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-pink-700"
                           >
                             Suivant
                           </a>
@@ -230,7 +230,7 @@ const Navbar = () => {
                             ou
                             <button
                               type="button"
-                              className="font-medium text-indigo-600 hover:text-indigo-500"
+                              className="font-medium text-pink-600 hover:text-pink-500"
                               onClick={() => setOpen(false)}
                             >
                               Continuer le shopping

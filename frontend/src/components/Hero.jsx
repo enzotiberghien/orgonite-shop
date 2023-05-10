@@ -10,7 +10,7 @@ const Hero = () => {
         <p className="text-lg md:text-xl mb-8">
           Découvrez notre collection exclusive d'orgonite soigneusement sélectionnées pour améliorer votre énergie et votre bien-être.
         </p>
-        <button className="bg-gray-800 text-white font-bold py-2 px-4 rounded hover:bg-gray-700">
+        <button className="bg-pink-800 text-white font-bold py-2 px-4 rounded hover:bg-pink-700">
           <Link to="/shop">Boutique</Link>
         </button>
       </div>
