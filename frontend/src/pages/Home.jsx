@@ -21,11 +21,16 @@ const Home = () => {
       <AboutUs />
       <Collection />
       {showCookiePopup && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-md text-center text-sm">
-          <p>Nous utilisons des cookies pour optimiser votre expérience.</p>
-          <button className="mt-2 p-1 bg-blue-500 text-white rounded" onClick={handleAccept}>
-            J'accepte
-          </button>
+        <div className="fixed inset-x-0 bottom-0 bg-blue-600 text-white py-4 px-6 shadow-md text-sm z-50">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-bold mb-2">Votre vie privée est importante pour nous</h2>
+              <p>Nous utilisons des cookies pour améliorer votre expérience de navigation, analyser le trafic du site et personnaliser le contenu. En naviguant sur le site, vous consentez à utiliser des cookies.</p>
+            </div>
+            <button className="ml-4 bg-white text-blue-600 rounded px-4 py-2 font-bold" onClick={handleAccept}>
+              J'accepte
+            </button>
+          </div>
         </div>
       )}
       <Footer />
