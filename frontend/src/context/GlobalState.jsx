@@ -16,12 +16,17 @@ export const GlobalProvider = (props) => {
     dispatch({ type: "ADD_TO_CART", payload: item });
   };
 
+  const removeFromCart = (item) => {
+    dispatch({ type: "REMOVE_FROM_CART", payload: item })
+  }
+
 
   return (
     <GlobalContext.Provider
       value={{
         ...state,
         addToCart,
+        removeFromCart
       }}
     >
       {props.children}

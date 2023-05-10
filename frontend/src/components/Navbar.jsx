@@ -12,13 +12,13 @@ import { loadStripe } from '@stripe/stripe-js';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { cart } = useGlobalState()
+  const { cart, removeFromCart } = useGlobalState()
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState([])
 
   const calculateTotal = () => {
     return cart.reduce((accumulator, product) => {
-      return accumulator + parseInt(product.price) * 1;
+      return accumulator + parseFloat(product.price) * 1;
     }, 0);
   };
 
@@ -110,8 +110,12 @@ const Navbar = () => {
         </button>
 
         <ul className="text-base">
-          <li className="pl-3 py-1 text-gray-800 hover:text-gray-600">Home</li>
-          <li className="pl-3 py-1 text-gray-800 hover:text-gray-600">Shopping</li>
+          <li className="pl-3 py-1 text-gray-800 hover:text-gray-600">
+            <NavLink to="/">Acceuil</NavLink>
+          </li>
+          <li className="pl-3 py-1 text-gray-800 hover:text-gray-600">
+            <NavLink to="/shop">Boutique</NavLink>
+          </li>
         </ul>
       </div>
 
@@ -183,14 +187,15 @@ const Navbar = () => {
                                       <p className="mt-1 text-sm text-gray-500">{product.color}</p>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm">
-                                      <p className="text-gray-500">Qty {product.quantity}</p>
+                                      <p className="text-gray-500">x1 {product.quantity}</p>
 
                                       <div className="flex">
                                         <button
                                           type="button"
+                                          onClick={() => { removeFromCart(product) }}
                                           className="font-medium text-indigo-600 hover:text-indigo-500"
                                         >
-                                          Remove
+                                          Supprimer
                                         </button>
                                       </div>
                                     </div>
@@ -214,7 +219,7 @@ const Navbar = () => {
                             onClick={onClickCheckout}
                             className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                           >
-                            Checkout
+                            Suivant
                           </a>
                         </div>
                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
