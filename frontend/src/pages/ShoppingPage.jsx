@@ -1,150 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import useGlobalState from "../hooks/useGlobalState";
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import { Fragment } from 'react'
-
+import { client, getProducts, imageUrlFor } from "../../sanity/client";
+import Footer from "../components/Footer"
 
 const ShoppingPage = () => {
 
-  const products = [
-    {
-      id: 1,
-      name: "Collier d'orgonite Énergie Vitale",
-      price: "29,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Collier d'orgonite Énergie Vitale",
-      href: "#",
-    },
-    {
-      id: 2,
-      name: "Pierre d'orgonite de protection",
-      price: "19,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Pierre d'orgonite de protection",
-      href: "#",
-    },
-    {
-      id: 3,
-      name: "Pyramide d'orgonite Harmonie Intérieure",
-      price: "39,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Pyramide d'orgonite Harmonie Intérieure",
-      href: "#",
-    },
-    {
-      id: 4,
-      name: "Collier en pierre d'améthyste",
-      price: "24,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Collier en pierre d'améthyste",
-      href: "#",
-    },
-    {
-      id: 5,
-      name: "Pierre de quartz rose pour l'amour",
-      price: "14,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Pierre de quartz rose pour l'amour",
-      href: "#",
-    },
-    {
-      id: 6,
-      name: "Pyramide d'orgonite Équilibre Énergétique",
-      price: "34,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Pyramide d'orgonite Équilibre Énergétique",
-      href: "#",
-    },
-    {
-      id: 7,
-      name: "Collier en labradorite protectrice",
-      price: "27,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Collier en labradorite protectrice",
-      href: "#",
-    },
-    {
-      id: 8,
-      name: "Pierre d'orgonite de guérison",
-      price: "21,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Pierre d'orgonite de guérison",
-      href: "#",
-    },
-    {
-      id: 9,
-      name: "Pyramide d'orgonite Puissance Spirituelle",
-      price: "42,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Pyramide d'orgonite Puissance Spirituelle",
-      href: "#",
-    },
-    {
-      id: 10,
-      name: "Collier en pierre de lune pour l'intuition",
-      price: "17,99 €",
-      imageSrc: "https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=",
-      imageAlt: "Collier en pierre",
-      href: "#",
-    }
-  ]
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    (async () => {
+      const fetchedProducts = await getProducts();
+      setProducts(fetchedProducts);
+    })()
+  }, [])
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart, cart } = useGlobalState()
+  const [filteredProducts, setFilteredProducts] = useState() // Initialize filteredProducts as an empty array
+
+  const filterByCategory = (category) => {
+    if (filteredProducts === null) setFilteredProducts(products)
+    const newArr = products.filter(e => e.category === category) // Filter products instead of filteredProducts
+    setFilteredProducts(newArr)
+  }
 
 
   const sortOptions = [
-    { name: 'Most Popular', href: '#', current: true },
-    { name: 'Best Rating', href: '#', current: false },
-    { name: 'Newest', href: '#', current: false },
-    { name: 'Price: Low to High', href: '#', current: false },
-    { name: 'Price: High to Low', href: '#', current: false },
+    { name: 'Prix: Bas a Haut', href: '#', current: false },
+    { name: 'Prix: Haut a bas', href: '#', current: false },
   ]
   const subCategories = [
     { name: 'Colliers', href: '#' },
     { name: 'Cotbag', href: '#' },
     { name: 'Pyramides', href: '#' },
     { name: 'Orgonites', href: '#' },
-  ]
-  const filters = [
-    {
-      id: 'color',
-      name: 'Color',
-      options: [
-        { value: 'white', label: 'White', checked: false },
-        { value: 'beige', label: 'Beige', checked: false },
-        { value: 'blue', label: 'Blue', checked: true },
-        { value: 'brown', label: 'Brown', checked: false },
-        { value: 'green', label: 'Green', checked: false },
-        { value: 'purple', label: 'Purple', checked: false },
-      ],
-    },
-    {
-      id: 'category',
-      name: 'Category',
-      options: [
-        { value: 'new-arrivals', label: 'New Arrivals', checked: false },
-        { value: 'sale', label: 'Sale', checked: false },
-        { value: 'travel', label: 'Travel', checked: true },
-        { value: 'organization', label: 'Organization', checked: false },
-        { value: 'accessories', label: 'Accessories', checked: false },
-      ],
-    },
-    {
-      id: 'size',
-      name: 'Size',
-      options: [
-        { value: '2l', label: '2L', checked: false },
-        { value: '6l', label: '6L', checked: false },
-        { value: '12l', label: '12L', checked: false },
-        { value: '18l', label: '18L', checked: false },
-        { value: '20l', label: '20L', checked: false },
-        { value: '40l', label: '40L', checked: true },
-      ],
-    },
   ]
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
@@ -185,11 +79,11 @@ const ShoppingPage = () => {
             </button>
             <h2 className="text-lg font-bold mb-4">{selectedProduct.name}</h2>
             <img
-              src={selectedProduct.imageSrc}
+              src={imageUrlFor(selectedProduct.imageSrc).url()}
               alt={selectedProduct.imageAlt}
               className="w-full h-64 mb-4 object-cover object-center"
             />
-            <p className="text-lg font-medium text-gray-900 mb-4">{selectedProduct.price}</p>
+            <p className="text-lg font-medium text-gray-900 mb-4">{selectedProduct.price}€</p>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={addToCartClick}
@@ -199,10 +93,6 @@ const ShoppingPage = () => {
           </div>
         </div>
       )}
-
-
-
-
 
 
       <div className="bg-white">
@@ -257,49 +147,6 @@ const ShoppingPage = () => {
                           </li>
                         ))}
                       </ul>
-
-                      {filters.map((section) => (
-                        <Disclosure as="div" key={section.id} className="border-t border-gray-200 px-4 py-6">
-                          {({ open }) => (
-                            <>
-                              <h3 className="-mx-2 -my-3 flow-root">
-                                <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                  <span className="font-medium text-gray-900">{section.name}</span>
-                                  <span className="ml-6 flex items-center">
-                                    {open ? (
-                                      <MinusIcon className="h-5 w-5" aria-hidden="true" />
-                                    ) : (
-                                      <PlusIcon className="h-5 w-5" aria-hidden="true" />
-                                    )}
-                                  </span>
-                                </Disclosure.Button>
-                              </h3>
-                              <Disclosure.Panel className="pt-6">
-                                <div className="space-y-6">
-                                  {section.options.map((option, optionIdx) => (
-                                    <div key={option.value} className="flex items-center">
-                                      <input
-                                        id={`filter-mobile-${section.id}-${optionIdx}`}
-                                        name={`${section.id}[]`}
-                                        defaultValue={option.value}
-                                        type="checkbox"
-                                        defaultChecked={option.checked}
-                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                      />
-                                      <label
-                                        htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                        className="ml-3 min-w-0 flex-1 text-gray-500"
-                                      >
-                                        {option.label}
-                                      </label>
-                                    </div>
-                                  ))}
-                                </div>
-                              </Disclosure.Panel>
-                            </>
-                          )}
-                        </Disclosure>
-                      ))}
                     </form>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -312,6 +159,22 @@ const ShoppingPage = () => {
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">Boutique</h1>
 
               <div className="flex items-center">
+                <div className="hidden lg:flex align-bottom pr-12">
+                  <h3 className="sr-only">Categories</h3>
+                  <ul role="list" className="flex space-x-12 text-sm font-medium text-gray-900">
+                    {subCategories.map((category) => (
+                      <li key={category.name}>
+                        <a onClick={(e) => {
+                          e.preventDefault()
+                          filterByCategory(category.name)
+                          console.log(filteredProducts)
+                        }} href={category.href}>{category.name}</a>
+
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
                     <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
@@ -375,64 +238,10 @@ const ShoppingPage = () => {
                 Products
               </h2>
 
-              <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-                {/* Filters */}
-                <form className="hidden lg:block">
-                  <h3 className="sr-only">Categories</h3>
-                  <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-                    {subCategories.map((category) => (
-                      <li key={category.name}>
-                        <a href={category.href}>{category.name}</a>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {filters.map((section) => (
-                    <Disclosure as="div" key={section.id} className="border-b border-gray-200 py-6">
-                      {({ open }) => (
-                        <>
-                          <h3 className="-my-3 flow-root">
-                            <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                              <span className="font-medium text-gray-900">{section.name}</span>
-                              <span className="ml-6 flex items-center">
-                                {open ? (
-                                  <MinusIcon className="h-5 w-5" aria-hidden="true" />
-                                ) : (
-                                  <PlusIcon className="h-5 w-5" aria-hidden="true" />
-                                )}
-                              </span>
-                            </Disclosure.Button>
-                          </h3>
-                          <Disclosure.Panel className="pt-6">
-                            <div className="space-y-4">
-                              {section.options.map((option, optionIdx) => (
-                                <div key={option.value} className="flex items-center">
-                                  <input
-                                    id={`filter-${section.id}-${optionIdx}`}
-                                    name={`${section.id}[]`}
-                                    defaultValue={option.value}
-                                    type="checkbox"
-                                    defaultChecked={option.checked}
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                  />
-                                  <label
-                                    htmlFor={`filter-${section.id}-${optionIdx}`}
-                                    className="ml-3 text-sm text-gray-600"
-                                  >
-                                    {option.label}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </Disclosure.Panel>
-                        </>
-                      )}
-                    </Disclosure>
-                  ))}
-                </form>
+              <div className="grid min-h-screen grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
 
                 {/* Product grid */}
-                <div className="lg:col-span-3">
+                <div className="lg:col-span-4">
                   <div className="bg-white">
                     <div>
                       <h2 className="sr-only">Products</h2>
@@ -446,13 +255,13 @@ const ShoppingPage = () => {
                           >
                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                               <img
-                                src={product.imageSrc}
+                                src={imageUrlFor(product.imageSrc).url()}
                                 alt={product.imageAlt}
                                 className="h-full w-full object-cover object-center group-hover:opacity-75"
                               />
                             </div>
                             <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-                            <p className="mt-1 text-lg font-medium text-gray-900">{product.price}</p>
+                            <p className="mt-1 text-lg font-medium text-gray-900">{product.price}€</p>
                           </a>
                         ))}
                       </div>
@@ -464,6 +273,7 @@ const ShoppingPage = () => {
           </main>
         </div>
       </div>
+      <Footer></Footer>
     </>
   )
 }

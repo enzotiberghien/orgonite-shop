@@ -5,7 +5,7 @@ const AboutUs = () => {
         <h2 className="text-2xl md:text-4xl font-bold mb-6">A propos</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <img
-            src="https://image-uniservice.linternaute.com/image/450/3/1649729709/7818838.jpg"
+            src="https://media.istockphoto.com/id/1398159195/sv/foto/close-up-view-of-woman-hands-holding-and-using-orgonite-or-orgone-pyramid-converting-negative.jpg?s=612x612&w=0&k=20&c=IOr0-M8gTS1yQeOSDPyXyG_ymrdcOngYC2wO9uRa5yE="
             alt="Esoteric Stones Shop"
             className="w-full h-full object-cover rounded-md"
           />

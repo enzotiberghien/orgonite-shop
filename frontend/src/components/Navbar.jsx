@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import navLogo from "../assets/navLogo.png";
 import { NavLink } from "react-router-dom";
 import useGlobalState from "../hooks/useGlobalState";
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { imageUrlFor } from "../../sanity/client";
+import { loadStripe } from '@stripe/stripe-js';
+
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart } = useGlobalState()
   const [open, setOpen] = useState(false)
+  const [items, setItems] = useState([])
 
   const calculateTotal = () => {
     return cart.reduce((accumulator, product) => {
@@ -17,22 +22,73 @@ const Navbar = () => {
     }, 0);
   };
 
+
+  const stripePromise = loadStripe('pk_live_51N68dJD9RqnLjs180Ubmun5izIQOEtHkC8w1U5Wuox8u5AFAZ3AvSpJdvoziK1SfKClTbsEpy2XFeZHtxC8148OJ00khGhJF7k');
+
+  const redirectToCheckout = async () => {
+    const stripe = await stripePromise;
+
+    const items = cart.map((product) => {
+      return {
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: product.name,
+            images: [imageUrlFor(product.imageSrc).url()],
+          },
+          unit_amount: parseInt(parseFloat(product.price) * 100),
+        },
+        quantity: 1,
+      };
+    });
+
+    const response = await fetch('http://localhost:5000/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ items: items }),
+    });
+
+    const session = await response.json();
+
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
+
+    if (result.error) {
+      console.error(result.error.message);
+    }
+  };
+
+  const onClickCheckout = async (e) => {
+    e.preventDefault()
+    await redirectToCheckout()
+  }
+
+
   return (
     <>
       <nav className="bg-gray-100 px-4 py-2 md:px-8 md:py-4 flex items-center justify-between">
         <img src={navLogo} alt="Orgonite 40 logo" className="h-8 md:h-12" />
-        <button
-          className="text-gray-800 md:hidden focus:outline-none focus:text-gray-600"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          <i className="fas fa-bars"></i>
-        </button>
+        <div className="flex items-center md:hidden">
+          <button onClick={() => setOpen(true)}>
+            <i className="fa-solid fa-cart-shopping text-gray-800 mr-2" />
+            <span className="text-gray-800 mr-4">{cart.length}</span>
+          </button>
+          <button
+            className="text-gray-800 focus:outline-none focus:text-gray-600"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <i className="fas fa-bars"></i>
+          </button>
+        </div>
         <ul className="hidden md:flex md:text-base md:items-center space-x-4">
           <li className="py-1 md:py-0 text-gray-800 hover:text-gray-600">
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/">Accueil</NavLink>
           </li>
           <li className="py-1 md:py-0 text-gray-800 hover:text-gray-600">
-            <NavLink to="/shop">Shopping</NavLink>
+            <NavLink to="/shop">Boutique</NavLink>
           </li>
           <li className="flex items-center">
             <button onClick={() => setOpen(true)}>
@@ -52,13 +108,12 @@ const Navbar = () => {
         >
           <i className="fas fa-times"></i>
         </button>
+
         <ul className="text-base">
           <li className="pl-3 py-1 text-gray-800 hover:text-gray-600">Home</li>
           <li className="pl-3 py-1 text-gray-800 hover:text-gray-600">Shopping</li>
         </ul>
       </div>
-
-
 
 
       <Transition.Root show={open} as={Fragment}>
@@ -91,7 +146,7 @@ const Navbar = () => {
                     <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                         <div className="flex items-start justify-between">
-                          <Dialog.Title className="text-lg font-medium text-gray-900">Shopping cart</Dialog.Title>
+                          <Dialog.Title className="text-lg font-medium text-gray-900">Panier</Dialog.Title>
                           <div className="ml-3 flex h-7 items-center">
                             <button
                               type="button"
@@ -111,7 +166,7 @@ const Navbar = () => {
                                 <li key={product.id} className="flex py-6">
                                   <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                     <img
-                                      src={product.imageSrc}
+                                      src={imageUrlFor(product.imageSrc).url()}
                                       alt={product.imageAlt}
                                       className="h-full w-full object-cover object-center"
                                     />
@@ -149,13 +204,14 @@ const Navbar = () => {
 
                       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                         <div className="flex justify-between text-base font-medium text-gray-900">
-                          <p>Subtotal</p>
-                          <p>${calculateTotal().toFixed(2)}</p>
+                          <p>Total</p>
+                          <p>{calculateTotal().toFixed(2)}€</p>
                         </div>
-                        <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+                        <p className="mt-0.5 text-sm text-gray-500">Livraison et taxes calculées à la suite</p>
                         <div className="mt-6">
                           <a
                             href="#"
+                            onClick={onClickCheckout}
                             className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                           >
                             Checkout
@@ -163,13 +219,13 @@ const Navbar = () => {
                         </div>
                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                           <p>
-                            or
+                            ou
                             <button
                               type="button"
                               className="font-medium text-indigo-600 hover:text-indigo-500"
                               onClick={() => setOpen(false)}
                             >
-                              Continue Shopping
+                              Continuer le shopping
                               <span aria-hidden="true"> &rarr;</span>
                             </button>
                           </p>
