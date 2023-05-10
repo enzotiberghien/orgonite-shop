@@ -216,7 +216,10 @@ const Navbar = () => {
                         <div className="mt-6">
                           <a
                             href="#"
-                            onClick={onClickCheckout}
+                            onClick={(e)=> {
+                              e.preventDefault()
+                              onClickCheckout()
+                            }}
                             className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                           >
                             Suivant
