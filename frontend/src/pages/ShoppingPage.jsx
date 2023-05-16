@@ -61,10 +61,10 @@ const ShoppingPage = () => {
 
   const subCategories = [
     { name: 'Tout', href: '#' },
-    { name: 'Colliers', href: '#' },
-    { name: 'Cotbag', href: '#' },
-    { name: 'Pyramide', href: '#' },
-    { name: 'Orgonites', href: '#' },
+    { name: 'Médaillons', href: '#' },
+    { name: 'Pyramides', href: '#' },
+    { name: 'Dômes', href: '#' },
+    { name: 'Cristaux', href: '#' },
   ]
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
