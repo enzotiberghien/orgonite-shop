@@ -11,10 +11,17 @@ const AboutUs = () => {
           />
           <div>
             <p className="text-lg mb-6">
-              Bienvenue sur Orgonite 40, votre boutique en ligne dédiée à l'orgonite, aux colliers, aux pierres et aux pyramides ésotériques. Nous nous engageons à vous offrir la meilleure sélection de pierres ésotériques soigneusement sélectionnées, parfaites pour vos besoins spirituels et énergétiques. Notre passion pour ces pierres uniques et puissantes nous pousse à parcourir le monde à la recherche des meilleurs spécimens, que nous mettons à votre disposition dans un seul et même endroit pratique.
+              Bienvenue sur Orgonite votre boutique dédiée aux orgonites sous forme de pyramides, dômes, de médaillons qinwi qu'aux cristaux. Certainsse demandent mais qu'est-ce qu'une orgonite ?
+            </p>
+            <p className="text-lg mb-6">
+              L'Orgonite est un alliage de minéraux et de métaux réunis au seins d'une résine que l'on appelle "Matrice". Cet assemblage, répond à un procédé de fabrication extrêmement précis. La matrice est composé de carbone, elle est souvent réalisée à base d'époxy ou de résin polyester. En son sein, on peut trouver différents métaux comme le cuivre, bronze, laiton, le zinc, pargous même de l'or ou de l'argent. A ceux-ci s'ajoutent les minéraux minutieusement choisis: Cristal de roche, Quartz rose, Amethyste, Aventurine...  
+            </p>
+            <p className="text-lg mb-6">
+              L'orgonite protègedes flux magnétiques auxquels nous demeurons quotidiennement exposés.
             </p>
             <p className="text-lg">
-              Notre mission est de vous aider à exploiter l'énergie et la beauté des pierres ésotériques, en favorisant l'équilibre, la sérénité et le bien-être dans votre vie. Nous sommes fiers de la qualité de nos pierres et nous nous efforçons de vous offrir un service client exceptionnel.              </p>
+              Ceux-ci émanent des équipements électriques et électromagnétiques. Lorsqu'ils fonctionnent, ils produisent des ordres négatives et néfastes pour l'être humain. L'orgonite capte ces flux afin de les transformer en ondes positives qui vont apporter des bienfaits considérables non seulement sur les personnes qui y sont exposés mais également sur la structure de leur environnement de vie qui s'en trouve tranformé.
+            </p>
           </div>
         </div>
       </div>

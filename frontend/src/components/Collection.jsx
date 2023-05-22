@@ -3,23 +3,23 @@ import React from 'react'
 const Collection = () => {
   const products = [
     {
-      imageUrl: 'https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=',
+      imageUrl: './src/assets/medaillon.webp',
       title: 'Medaillons',
       description: "Une pierre puissante pour la protection et l'amélioration de l'énergie.",
     },
     {
-      imageUrl: 'https://media.istockphoto.com/id/991579270/photo/crystals-and-orgonite.jpg?b=1&s=170667a&w=0&k=20&c=4w7RZeWNQQtojJA8GwVAoh3oLxVyJ5DriHQmcOvJrWM=',
-      title: 'Cotbag',
+      imageUrl: './src/assets/pyramide.webp',
+      title: 'Pyramides',
       description: 'Une pierre unique pour la croissance spirituelle et la paix intérieure.',
     },
     {
-      imageUrl: 'https://media.istockphoto.com/id/1425317325/photo/orgonite-carnelian-pyramid-close-up.jpg?b=1&s=170667a&w=0&k=20&c=ad0V_Ysq6r703cctBbEGA69dIFS7uD8IlOS6dbV6ZyY=',
-      title: 'Pyramides',
+      imageUrl: './src/assets/dome.webp',
+      title: 'Dômes',
       description: "Une belle pierre pour la guérison émotionnelle et l'équilibre.",
     },
     {
       imageUrl: 'https://media.istockphoto.com/id/1425318325/photo/orgonite-pyramid-and-mala-necklace.jpg?b=1&s=170667a&w=0&k=20&c=oB-su_73zHg1Fsz1Tu9MuY-VQxyHef5t9GYBjXsIKyY=',
-      title: 'Colliers',
+      title: 'Crystaux',
       description: "Une pierre unique pour la croissance spirituelle et la paix intérieure.",
     },
   ];
