@@ -9,6 +9,5 @@ export default {
     { name: 'imageSrc', title: 'Image Source', type: 'image' },
     { name: 'imageAlt', title: 'Image Alt', type: 'string' },
     { name: 'category', title: 'Category', type: 'string' },
-    { name: 'vendu', title: 'Vendu', type: 'boolean'}
     ],
 }
