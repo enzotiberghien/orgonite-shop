@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm install && node backend/server.js && cd backend/Sanity && npm run dev",
+    "start": "node backend/server.js && cd backend/Sanity && npm run dev",
     "build": "npm install && cd frontend/ && npm install && npm run build"
   },
   "repository": {
