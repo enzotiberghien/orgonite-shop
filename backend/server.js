@@ -2,6 +2,16 @@ const express = require("express")
 require("dotenv").config()
 const cors = require('cors');
 const path = require('path');
+const sanityClient = require('@sanity/client');
+
+
+const sanityC = sanityClient.createClient({
+  projectId: '3f4jk2dm',
+  dataset: 'production',
+  useCdn: true,
+  apiVersion: '2023-05-03',
+  token: 'skuYYhug0lOzVhd5e1bC0y5tNWPfbgNr3uUA0qx49ttHF5UkBkNkhkLGiyW7pZtWOTsylE8O6NjIw4DKAj9TmVCiSxkcvGkDmalQWExDQksiZiM2zqopS7A9nybCmAQAF129Mz57OsZFJC0Fj9JEKjjzpjLMb4Y2MS9oJYzwpnx8Ls5KlTm4', // Add your write token here 
+});
 
 
 const app = express()
@@ -76,6 +86,50 @@ app.post('/create-checkout-session', async (req, res) => {
 
   res.json({ id: session.id });
 });
+
+app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = 'whsec_474e8a50e53a7094d25197e4d6e4fddead8052fe3bbb6de464515db83dbe01bb'; // Replace with your Stripe webhook endpoint secret
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (error) {
+    console.error('Error verifying webhook signature:', error);
+    return res.sendStatus(400);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+
+    // Retrieve the items associated with the session
+    const items = session.display_items.map(item => ({
+      productId: item.custom.product_id
+    }));
+
+    // Delete the products from Sanity
+    for (const item of items) {
+      await deleteProduct(item.productId);
+    }
+
+    console.log('Products deleted successfully from Sanity.');
+
+    res.sendStatus(200);
+  } else {
+    console.log('Webhook event ignored:', event.type);
+    res.sendStatus(200);
+  }
+});
+
+async function deleteProduct(productId) {
+  try {
+    await sanityClient.delete(productId);
+  } catch (error) {
+    console.error('Error deleting product from Sanity:', error);
+    throw error;
+  }
+}
 
 app.use(express.static(path.join(__dirname, "../frontend/dist")))
 app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "../", "frontend", "dist", "index.html")))
