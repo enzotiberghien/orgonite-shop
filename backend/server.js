@@ -10,7 +10,7 @@ const sanityC = sanityClient.createClient({
   dataset: 'production',
   useCdn: true,
   apiVersion: '2023-05-03',
-  token: 'skuYYhug0lOzVhd5e1bC0y5tNWPfbgNr3uUA0qx49ttHF5UkBkNkhkLGiyW7pZtWOTsylE8O6NjIw4DKAj9TmVCiSxkcvGkDmalQWExDQksiZiM2zqopS7A9nybCmAQAF129Mz57OsZFJC0Fj9JEKjjzpjLMb4Y2MS9oJYzwpnx8Ls5KlTm4', // Add your write token here 
+  token: 'whsec_474e8a50e53a7094d25197e4d6e4fddead8052fe3bbb6de464515db83dbe01bb', // Add your write token here 
 });
 
 
