@@ -99,12 +99,21 @@ app.post('/create-checkout-session', async (req, res) => {
 
   const lineItems = items.map(item => {
     return {
-      ...item,
-      metadata: {
-        sanityId: item._id, // sanityId from your item
+      price_data: {
+        currency: 'eur',
+        product_data: {
+          name: item.name,
+          // add other product data here
+        },
+        unit_amount: item.price,
+        metadata: {
+          sanityId: item._id,
+        },
       },
+      quantity: item.quantity,
     };
   });
+  
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
