@@ -104,26 +104,6 @@ app.post('/create-checkout-session', async (req, res) => {
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: {
-            amount: 0,
-            currency: 'eur',
-          },
-          display_name: 'Free shipping',
-          delivery_estimate: {
-            minimum: {
-              unit: 'business_day',
-              value: 5,
-            },
-            maximum: {
-              unit: 'business_day',
-              value: 7,
-            },
-          },
-        },
-      },
-      {
-        shipping_rate_data: {
-          type: 'fixed_amount',
-          fixed_amount: {
             amount: 500, // This is in cents, 500 cents is 5 euros.
             currency: 'eur',
           },
@@ -147,7 +127,7 @@ app.post('/create-checkout-session', async (req, res) => {
     cancel_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
   });
 
-  res.json({ id: session.id });
+  res.json({ id: session.id });  
 });
 
 app.use(express.static(path.join(__dirname, "../frontend/dist")))
