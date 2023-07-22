@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
-app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
+app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH';
 
@@ -68,7 +68,7 @@ async function deleteProductByName(productName) {
     const query = '*[_type == "product" && name == $name][0]';
     const params = { name: productName };
     const product = await sanityC.fetch(query, params);
-    
+
     if (!product) {
       console.log('Product not found:', productName);
       return;
@@ -124,23 +124,23 @@ app.post('/create-checkout-session', async (req, res) => {
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: {
-            amount: 1500,
+            amount: 500, // This is in cents, 500 cents is 5 euros.
             currency: 'eur',
           },
-          display_name: 'Next day air',
+          display_name: 'Standard Shipping',
           delivery_estimate: {
             minimum: {
               unit: 'business_day',
-              value: 1,
+              value: 3,
             },
             maximum: {
               unit: 'business_day',
-              value: 1,
+              value: 5,
             },
           },
         },
       },
-    ], 
+    ],
     line_items: items,
     mode: 'payment',
     success_url: 'https://fair-tan-duck-wig.cyclic.app/shop',

@@ -3,17 +3,17 @@ import React from 'react'
 const Collection = () => {
   const products = [
     {
-      imageUrl: './src/assets/medaillon.webp',
+      imageUrl: 'https://media.istockphoto.com/id/1425318325/photo/orgonite-pyramid-and-mala-necklace.jpg?b=1&s=170667a&w=0&k=20&c=oB-su_73zHg1Fsz1Tu9MuY-VQxyHef5t9GYBjXsIKyY=',
       title: 'Medaillons',
       description: "Une pierre puissante pour la protection et l'amélioration de l'énergie.",
     },
     {
-      imageUrl: './src/assets/pyramide.webp',
+      imageUrl: 'https://media.istockphoto.com/id/1425318325/photo/orgonite-pyramid-and-mala-necklace.jpg?b=1&s=170667a&w=0&k=20&c=oB-su_73zHg1Fsz1Tu9MuY-VQxyHef5t9GYBjXsIKyY=',
       title: 'Pyramides',
       description: 'Une pierre unique pour la croissance spirituelle et la paix intérieure.',
     },
     {
-      imageUrl: './src/assets/dome.webp',
+      imageUrl: 'https://media.istockphoto.com/id/1425318325/photo/orgonite-pyramid-and-mala-necklace.jpg?b=1&s=170667a&w=0&k=20&c=oB-su_73zHg1Fsz1Tu9MuY-VQxyHef5t9GYBjXsIKyY=',
       title: 'Dômes',
       description: "Une belle pierre pour la guérison émotionnelle et l'équilibre.",
     },
