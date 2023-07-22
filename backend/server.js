@@ -51,10 +51,15 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
     });
 
     for (const item of session.line_items.data) {
-      const productId = item.price.product.metadata.sanityId;
-      console.log("Deleting product with ID: ", productId)
-      await deleteProduct(productId);
+      const sanityId = item.price.product.metadata.sanityId;
+      if (sanityId) {
+        console.log("Deleting product with ID: ", sanityId)
+        await deleteProduct(sanityId);
+      } else {
+        console.log("Product metadata is undefined for item:", item);
+      }
     }
+    
 
     console.log('Products deleted successfully from Sanity.');
 
