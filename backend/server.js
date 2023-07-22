@@ -94,6 +94,8 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
 
+  console.log('Type of req.body:', typeof req.body);  // Add this
+  console.log('Content of req.body:', req.body);  // Add this
 
   let event;
 
