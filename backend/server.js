@@ -3,7 +3,6 @@ require("dotenv").config()
 const cors = require('cors');
 const path = require('path');
 const sanityClient = require('@sanity/client');
-let ITEMS;
 
 
 const sanityC = sanityClient.createClient({
@@ -50,26 +49,24 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
   }
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
+    const session = await stripe.checkout.sessions.retrieve(event.data.object.id, {
+      expand: ['line_items'],
+    });
 
-    // Retrieve the items associated with the session
-    const items = ITEMS.map(item => ({
-      productId: item.custom.product_id
+    const items = session.line_items.data.map(item => ({
+      productId: item.price.product
     }));
 
-    // Delete the products from Sanity
     for (const item of items) {
       await deleteProduct(item.productId);
     }
 
     console.log('Products deleted successfully from Sanity.');
 
-    // Respond with 201 status code to confirm successful processing of the event
     return res.status(200).send('Webhook Received: checkout.session.completed');
   } else {
     console.log('Webhook event ignored:', event.type);
 
-    // Respond with 200 status code for other event types to confirm receipt
     return res.status(200).send('Webhook Received: Other event type.');
   }
 });
@@ -98,7 +95,6 @@ app.use(express.json())
 
 app.post('/create-checkout-session', async (req, res) => {
   const { items } = req.body;
-  ITEMS = items
   
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
