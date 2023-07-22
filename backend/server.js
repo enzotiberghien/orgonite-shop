@@ -22,8 +22,8 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
