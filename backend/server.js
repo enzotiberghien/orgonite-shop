@@ -94,22 +94,6 @@ app.use(express.json())
 app.post('/create-checkout-session', async (req, res) => {
   const { items } = req.body;
 
-  const lineItems = items.map(item => {
-    return {
-      price_data: {
-        currency: 'eur',
-        product_data: {
-          name: item.name,
-          metadata: {
-            sanityId: item._id,
-          },
-        },
-        unit_amount: item.price,
-      },
-      quantity: item.quantity,
-    };
-  });
-
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     shipping_address_collection: {
@@ -157,7 +141,7 @@ app.post('/create-checkout-session', async (req, res) => {
         },
       },
     ], 
-    line_items: lineItems,
+    line_items: items,
     mode: 'payment',
     success_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
     cancel_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
