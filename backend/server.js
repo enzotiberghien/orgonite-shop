@@ -22,6 +22,44 @@ app.use(cors({
   credentials: true
 }));
 
+app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (error) {
+    console.error('Error verifying webhook signature:', error);
+    return res.status(400).send(`Webhook Error: ${req.body} : ${sig}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+
+    // Retrieve the items associated with the session
+    const items = session.display_items.map(item => ({
+      productId: item.custom.product_id
+    }));
+
+    // Delete the products from Sanity
+    for (const item of items) {
+      await deleteProduct(item.productId);
+    }
+
+    console.log('Products deleted successfully from Sanity.');
+
+    // Respond with 201 status code to confirm successful processing of the event
+    return res.status(200).send('Webhook Received: checkout.session.completed');
+  } else {
+    console.log('Webhook event ignored:', event.type);
+
+    // Respond with 200 status code for other event types to confirm receipt
+    return res.status(200).send('Webhook Received: Other event type.');
+  }
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -85,44 +123,6 @@ app.post('/create-checkout-session', async (req, res) => {
   });
 
   res.json({ id: session.id });
-});
-
-app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
-
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-  } catch (error) {
-    console.error('Error verifying webhook signature:', error);
-    return res.status(400).send(`Webhook Error: ${req.body} : ${sig}`);
-  }
-
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
-
-    // Retrieve the items associated with the session
-    const items = session.display_items.map(item => ({
-      productId: item.custom.product_id
-    }));
-
-    // Delete the products from Sanity
-    for (const item of items) {
-      await deleteProduct(item.productId);
-    }
-
-    console.log('Products deleted successfully from Sanity.');
-
-    // Respond with 201 status code to confirm successful processing of the event
-    return res.status(200).send('Webhook Received: checkout.session.completed');
-  } else {
-    console.log('Webhook event ignored:', event.type);
-
-    // Respond with 200 status code for other event types to confirm receipt
-    return res.status(200).send('Webhook Received: Other event type.');
-  }
 });
 
 
