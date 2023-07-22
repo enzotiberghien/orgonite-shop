@@ -23,8 +23,17 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  if (req.originalUrl === "/webhooks") {
+      next();
+  } else {
+      express.json()(req, res, next);
+      app.use(express.urlencoded({ extended: true }))(req, res, next);
+  }
+});
+
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
