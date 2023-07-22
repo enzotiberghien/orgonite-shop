@@ -10,7 +10,7 @@ const sanityC = sanityClient.createClient({
   dataset: 'production',
   useCdn: true,
   apiVersion: '2023-05-03',
-  
+
   token: 'sk6K3VAIZsPI0ZsLwcLUrWi3p17zx2EDxfqGrLm9kfIPEuFn99oHOEunctPsDs6sRUKgxAkAUL4Gp7PXQa36PdHNSgiAKWHlxemgiQDdGSXWpDM0z3piwLNkVK6K1udNdbItuy7tTlY7lBTp336XXy5WhkTvUEGAtE0onUt4uIY5NZj46qlF', // Add your write token here 
 });
 
@@ -32,7 +32,7 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
 
 
-app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
+app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
 
@@ -54,13 +54,15 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
     });
 
     const items = session.line_items.data.map(item => ({
-      productId: item._id
+      productId: item.price.product
     }));
 
-    for (const item of items) {
-      console.log("test: ", item.productId)
-      await deleteProduct(item.productId);
+    for (const item of session.line_items.data) {
+      const productId = item.metadata.sanityId;
+      console.log("Deleting product with ID: ", productId)
+      await deleteProduct(productId);
     }
+
 
     console.log('Products deleted successfully from Sanity.');
 
@@ -96,7 +98,16 @@ app.use(express.json())
 
 app.post('/create-checkout-session', async (req, res) => {
   const { items } = req.body;
-  
+
+  const lineItems = items.map(item => {
+    return {
+      ...item,
+      metadata: {
+        sanityId: item._id, // sanityId from your item
+      },
+    };
+  });
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     shipping_address_collection: {
@@ -144,7 +155,7 @@ app.post('/create-checkout-session', async (req, res) => {
         },
       },
     ],
-    line_items: items,
+    line_items: lineItems,
     mode: 'payment',
     success_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
     cancel_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
