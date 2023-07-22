@@ -24,8 +24,6 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.raw({ type: 'application/json', limit: '1mb' })); // Add this middleware for raw body parsing
-
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
@@ -89,14 +87,14 @@ app.post('/create-checkout-session', async (req, res) => {
   res.json({ id: session.id });
 });
 
-app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
 
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.body.toString(), sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
     return res.status(400).send(`Webhook Error: ${error}`);
