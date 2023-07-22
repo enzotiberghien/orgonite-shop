@@ -32,12 +32,9 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
 
 
-app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
-
-  console.log('Type of req.body:', typeof req.body);  // Add this
-  console.log('Content of req.body:', req.body);  // Add this
 
   let event;
 
@@ -45,24 +42,19 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
-    return res.status(400).send(`Webhook Error: ${req.body} : ${typeof req.body}`);
+    return res.status(400).send(`Webhook Error: ${error.message}`);
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = await stripe.checkout.sessions.retrieve(event.data.object.id, {
-      expand: ['line_items'],
+      expand: ['line_items.data.price.product'],
     });
 
-    const items = session.line_items.data.map(item => ({
-      productId: item.price.product
-    }));
-
     for (const item of session.line_items.data) {
-      const productId = item.metadata.sanityId;
+      const productId = item.price.product.metadata.sanityId;
       console.log("Deleting product with ID: ", productId)
       await deleteProduct(productId);
     }
-
 
     console.log('Products deleted successfully from Sanity.');
 
@@ -73,6 +65,7 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
     return res.status(200).send('Webhook Received: Other event type.');
   }
 });
+
 
 
 async function deleteProduct(productId) {
