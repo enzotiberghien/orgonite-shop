@@ -108,7 +108,7 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
     event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
-    return res.status(400).send(`Webhook Error: ${req.body} : ${sig}`);
+    return res.status(400).send(`Webhook Error: ${req.rawBody} : ${sig}`);
   }
 
   if (event.type === 'checkout.session.completed') {
