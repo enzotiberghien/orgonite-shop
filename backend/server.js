@@ -58,6 +58,7 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
     }));
 
     for (const item of items) {
+      console.log(item)
       await deleteProduct(item.productId);
     }
 
