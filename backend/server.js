@@ -10,6 +10,7 @@ const sanityC = sanityClient.createClient({
   dataset: 'production',
   useCdn: true,
   apiVersion: '2023-05-03',
+  
   token: 'whsec_474e8a50e53a7094d25197e4d6e4fddead8052fe3bbb6de464515db83dbe01bb', // Add your write token here 
 });
 
@@ -23,6 +24,8 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.raw({ type: 'application/json', limit: '1mb' })); // Add this middleware for raw body parsing
+
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
