@@ -22,15 +22,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.use((req, res, next) => {
-  if (req.originalUrl === "/stripe-webhook") {
-      next();
-  } else {
-      express.json()(req, res, next);
-      express.urlencoded({ extended: true })(req, res, next);
-  }
-});
-
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 
@@ -38,70 +29,73 @@ app.use((req, res, next) => {
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
 
-app.post('/create-checkout-session', async (req, res) => {
-  const { items } = req.body;
+// app.post('/create-checkout-session', async (req, res) => {
+//   const { items } = req.body;
   
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    shipping_address_collection: {
-      allowed_countries: ['FR', 'SE'],
-    },
-    shipping_options: [
-      {
-        shipping_rate_data: {
-          type: 'fixed_amount',
-          fixed_amount: {
-            amount: 0,
-            currency: 'eur',
-          },
-          display_name: 'Free shipping',
-          delivery_estimate: {
-            minimum: {
-              unit: 'business_day',
-              value: 5,
-            },
-            maximum: {
-              unit: 'business_day',
-              value: 7,
-            },
-          },
-        },
-      },
-      {
-        shipping_rate_data: {
-          type: 'fixed_amount',
-          fixed_amount: {
-            amount: 1500,
-            currency: 'eur',
-          },
-          display_name: 'Next day air',
-          delivery_estimate: {
-            minimum: {
-              unit: 'business_day',
-              value: 1,
-            },
-            maximum: {
-              unit: 'business_day',
-              value: 1,
-            },
-          },
-        },
-      },
-    ],
-    line_items: items,
-    mode: 'payment',
-    success_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
-    cancel_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
-  });
+//   const session = await stripe.checkout.sessions.create({
+//     payment_method_types: ['card'],
+//     shipping_address_collection: {
+//       allowed_countries: ['FR', 'SE'],
+//     },
+//     shipping_options: [
+//       {
+//         shipping_rate_data: {
+//           type: 'fixed_amount',
+//           fixed_amount: {
+//             amount: 0,
+//             currency: 'eur',
+//           },
+//           display_name: 'Free shipping',
+//           delivery_estimate: {
+//             minimum: {
+//               unit: 'business_day',
+//               value: 5,
+//             },
+//             maximum: {
+//               unit: 'business_day',
+//               value: 7,
+//             },
+//           },
+//         },
+//       },
+//       {
+//         shipping_rate_data: {
+//           type: 'fixed_amount',
+//           fixed_amount: {
+//             amount: 1500,
+//             currency: 'eur',
+//           },
+//           display_name: 'Next day air',
+//           delivery_estimate: {
+//             minimum: {
+//               unit: 'business_day',
+//               value: 1,
+//             },
+//             maximum: {
+//               unit: 'business_day',
+//               value: 1,
+//             },
+//           },
+//         },
+//       },
+//     ],
+//     line_items: items,
+//     mode: 'payment',
+//     success_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
+//     cancel_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
+//   });
 
-  res.json({ id: session.id });
-});
+//   res.json({ id: session.id });
+// });
 
 
 
-app.post('/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
+app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
+
+  console.log('Type of req.body:', typeof req.body);  // Add this
+  console.log('Content of req.body:', req.body);  // Add this
 
   let event;
 
