@@ -161,7 +161,7 @@ app.post('/create-checkout-session', async (req, res) => {
           },
         },
       },
-    ],
+    ], 
     line_items: lineItems,
     mode: 'payment',
     success_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
