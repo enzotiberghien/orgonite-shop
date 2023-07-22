@@ -22,14 +22,13 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
 
-app.post('/create-checkout-session', async (req, res) => {
+app.post('/create-checkout-session', express.json(), async (req, res) => {
   const { items } = req.body;
   
   const session = await stripe.checkout.sessions.create({
