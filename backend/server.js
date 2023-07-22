@@ -27,7 +27,7 @@ app.use((req, res, next) => {
       next();
   } else {
       express.json()(req, res, next);
-      app.use(express.urlencoded({ extended: true }))(req, res, next);
+      express.urlencoded({ extended: true })(req, res, next);
   }
 });
 
