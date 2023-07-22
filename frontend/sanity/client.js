@@ -7,7 +7,6 @@ export const client = createClient({
   dataset: 'production',
   useCdn: true,
   apiVersion: '2023-05-03',
-  token: 'skuYYhug0lOzVhd5e1bC0y5tNWPfbgNr3uUA0qx49ttHF5UkBkNkhkLGiyW7pZtWOTsylE8O6NjIw4DKAj9TmVCiSxkcvGkDmalQWExDQksiZiM2zqopS7A9nybCmAQAF129Mz57OsZFJC0Fj9JEKjjzpjLMb4Y2MS9oJYzwpnx8Ls5KlTm4', // Add your write token here 
 })
 
 export async function getProducts() {
