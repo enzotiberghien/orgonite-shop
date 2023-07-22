@@ -96,7 +96,7 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
-    return res.sendStatus(400);
+    return res.status(400).send('Webhook Error: Invalid signature.');
   }
 
   if (event.type === 'checkout.session.completed') {
@@ -114,21 +114,35 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
 
     console.log('Products deleted successfully from Sanity.');
 
-    res.sendStatus(200);
+    // Respond with 201 status code to confirm successful processing of the event
+    return res.status(200).send('Webhook Received: checkout.session.completed');
   } else {
     console.log('Webhook event ignored:', event.type);
-    res.sendStatus(200);
+
+    // Respond with 200 status code for other event types to confirm receipt
+    return res.status(200).send('Webhook Received: Other event type.');
   }
 });
 
+
 async function deleteProduct(productId) {
   try {
-    await sanityClient.delete(productId);
+    // Use the 'delete' mutation to delete the product document by its ID
+    await sanityC
+      .delete(productId)
+      .then(response => {
+        console.log('Product deleted successfully from Sanity:', response);
+      })
+      .catch(error => {
+        console.error('Error deleting product from Sanity:', error);
+        throw error;
+      });
   } catch (error) {
     console.error('Error deleting product from Sanity:', error);
     throw error;
   }
 }
+
 
 app.use(express.static(path.join(__dirname, "../frontend/dist")))
 app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "../", "frontend", "dist", "index.html")))
