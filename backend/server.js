@@ -79,8 +79,8 @@ app.post('/create-checkout-session', async (req, res) => {
     ],
     line_items: items,
     mode: 'payment',
-    success_url: 'https://yourwebsite.com/success',
-    cancel_url: 'https://yourwebsite.com/canceled',
+    success_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
+    cancel_url: 'https://fair-tan-duck-wig.cyclic.app/shop',
   });
 
   res.json({ id: session.id });
