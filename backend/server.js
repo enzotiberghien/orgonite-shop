@@ -22,19 +22,8 @@ app.use(cors({
   credentials: true
 }));
 
-app.use((req, res, next) => {
-  req.rawBody = '';
-  req.on('data', chunk => {
-    req.rawBody += chunk;
-  });
-  req.on('end', () => {
-    next();
-  });
-});
-
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
-
 
 
 app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
@@ -44,10 +33,10 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
-    return res.status(400).send(`Webhook Error: ${req.rawBody} : ${sig}`);
+    return res.status(400).send(`Webhook Error: ${req.body} : ${sig}`);
   }
 
   if (event.type === 'checkout.session.completed') {
