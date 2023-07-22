@@ -11,7 +11,7 @@ const sanityC = sanityClient.createClient({
   useCdn: true,
   apiVersion: '2023-05-03',
   
-  token: 'whsec_474e8a50e53a7094d25197e4d6e4fddead8052fe3bbb6de464515db83dbe01bb', // Add your write token here 
+  token: 'sk6K3VAIZsPI0ZsLwcLUrWi3p17zx2EDxfqGrLm9kfIPEuFn99oHOEunctPsDs6sRUKgxAkAUL4Gp7PXQa36PdHNSgiAKWHlxemgiQDdGSXWpDM0z3piwLNkVK6K1udNdbItuy7tTlY7lBTp336XXy5WhkTvUEGAtE0onUt4uIY5NZj46qlF', // Add your write token here 
 });
 
 
