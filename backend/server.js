@@ -54,7 +54,7 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
     });
 
     const items = session.line_items.data.map(item => ({
-      productId: item.price.product
+      productId: item._id
     }));
 
     for (const item of items) {
