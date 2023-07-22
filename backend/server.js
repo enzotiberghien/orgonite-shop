@@ -1,4 +1,5 @@
 const express = require("express")
+const bodyParser = require('body-parser');
 require("dotenv").config()
 const cors = require('cors');
 const path = require('path');
@@ -90,17 +91,17 @@ app.post('/create-checkout-session', async (req, res) => {
 
 
 
-app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
+app.post('/stripe-webhook', bodyParser.raw({type: 'application/json'}), (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
 
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(JSON.stringify(req.body), sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
-    return res.status(400).send(`Webhook Error: ${JSON.stringify(req.body)} : ${typeof req.body}`);
+    return res.status(400).send(`Webhook Error: ${req.body} : ${typeof req.body}`);
   }
 
   if (event.type === 'checkout.session.completed') {
