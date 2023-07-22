@@ -3,6 +3,7 @@ require("dotenv").config()
 const cors = require('cors');
 const path = require('path');
 const sanityClient = require('@sanity/client');
+let ITEMS;
 
 
 const sanityC = sanityClient.createClient({
@@ -52,7 +53,7 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
     const session = event.data.object;
 
     // Retrieve the items associated with the session
-    const items = session.display_items.map(item => ({
+    const items = ITEMS.map(item => ({
       productId: item.custom.product_id
     }));
 
@@ -97,6 +98,7 @@ app.use(express.json())
 
 app.post('/create-checkout-session', async (req, res) => {
   const { items } = req.body;
+  ITEMS = items
   
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
