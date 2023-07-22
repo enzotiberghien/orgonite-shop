@@ -104,11 +104,11 @@ app.post('/create-checkout-session', async (req, res) => {
         product_data: {
           name: item.name,
           // add other product data here
+          metadata: {
+            sanityId: item._id,
+          },
         },
         unit_amount: item.price,
-        metadata: {
-          sanityId: item._id,
-        },
       },
       quantity: item.quantity,
     };
