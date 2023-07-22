@@ -91,7 +91,7 @@ app.post('/create-checkout-session', async (req, res) => {
 
 
 
-app.post('/stripe-webhook', bodyParser.raw({type: 'application/json'}), (req, res) => {
+app.post('/stripe-webhook', bodyParser.raw({type: 'application/json'}), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
 
