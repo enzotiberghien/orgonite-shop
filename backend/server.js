@@ -94,17 +94,13 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
 
-  console.log('Type of req.body:', typeof req.body);  // Add this
-  console.log('Content of req.body:', req.body);  // Add this
-
   let event;
 
   try {
-    const payload = req.body.toString('utf-8');
-    event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(JSON.stringify(req.body), sig, endpointSecret);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
-    return res.status(400).send(`Webhook Error: ${req.body} : ${sig}`);
+    return res.status(400).send(`Webhook Error: ${JSON.stringify(req.body)} : ${typeof req.body}`);
   }
 
   if (event.type === 'checkout.session.completed') {
