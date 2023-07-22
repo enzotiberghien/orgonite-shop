@@ -22,6 +22,9 @@ app.use(cors({
   credentials: true
 }));
 
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
+
+
 app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = 'whsec_O5fVkYWDptx0EByxbIQ0KrBcXITXc1ZH'; // Replace with your Stripe webhook endpoint secret
@@ -62,8 +65,6 @@ app.post('/stripe-webhook',  express.raw({ type: 'application/json' }), async (r
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
 
 app.post('/create-checkout-session', async (req, res) => {
