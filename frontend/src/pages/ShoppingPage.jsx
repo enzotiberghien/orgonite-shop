@@ -11,34 +11,60 @@ import Footer from "../components/Footer"
 const ShoppingPage = () => {
 
   const [products, setProducts] = useState([])
+  const [viewMode, setViewMode] = useState('grid');
 
-  useEffect(() => {
-    (async () => {
-      const fetchedProducts = await getProducts();
-      setProducts(fetchedProducts);
-    })()
-  }, [])
+
+
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart, cart } = useGlobalState()
-  const [filteredProducts, setFilteredProducts] = useState() // Initialize filteredProducts as an empty array
+  const [filteredProducts, setFilteredProducts] = useState([])
+
+  useEffect(() => {
+    (async () => {
+      const fetchedProducts = await getProducts()
+      setProducts(fetchedProducts)
+    })()
+  }, [])
+
+  useEffect(() => {
+    setFilteredProducts(products)
+  }, [products])
+
+  useEffect(() => {
+    console.log(filteredProducts)
+  }, [filteredProducts])
 
   const filterByCategory = (category) => {
-    if (filteredProducts === null) setFilteredProducts(products)
-    const newArr = products.filter(e => e.category === category) // Filter products instead of filteredProducts
+    let newArr
+    if (category === "Tout") newArr = products
+    else newArr = products?.filter(e => e.category === category)
     setFilteredProducts(newArr)
+
+  }
+
+  const sortProducts = (sortType) => {
+    let sortedProducts = [];
+    if (sortType === 'Prix: Bas a Haut') {
+      sortedProducts = [...filteredProducts].sort((a, b) => a.price - b.price);
+    } else if (sortType === 'Prix: Haut a bas') {
+      sortedProducts = [...filteredProducts].sort((a, b) => b.price - a.price);
+    }
+    setFilteredProducts(sortedProducts);
   }
 
 
   const sortOptions = [
-    { name: 'Prix: Bas a Haut', href: '#', current: false },
-    { name: 'Prix: Haut a bas', href: '#', current: false },
+    { name: 'Prix: Bas a Haut', href: '#', current: false, sortFunction: () => sortProducts('Prix: Bas a Haut') },
+    { name: 'Prix: Haut a bas', href: '#', current: false, sortFunction: () => sortProducts('Prix: Haut a bas') },
   ]
+
   const subCategories = [
-    { name: 'Colliers', href: '#' },
-    { name: 'Cotbag', href: '#' },
+    { name: 'Tout', href: '#' },
+    { name: 'Médaillons', href: '#' },
     { name: 'Pyramides', href: '#' },
-    { name: 'Orgonites', href: '#' },
+    { name: 'Dômes', href: '#' },
+    { name: 'Cristaux', href: '#' },
   ]
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
@@ -85,7 +111,7 @@ const ShoppingPage = () => {
             />
             <p className="text-lg font-medium text-gray-900 mb-4">{selectedProduct.price}€</p>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
               onClick={addToCartClick}
             >
               Add to Cart
@@ -141,7 +167,11 @@ const ShoppingPage = () => {
                       <ul role="list" className="px-2 py-3 font-medium text-gray-900">
                         {subCategories.map((category) => (
                           <li key={category.name}>
-                            <a href={category.href} className="block px-2 py-3">
+                            <a href={category.href} onClick={(e) => {
+                              e.preventDefault()
+                              filterByCategory(category.name)
+                              console.log(filteredProducts)
+                            }} className="block px-2 py-3">
                               {category.name}
                             </a>
                           </li>
@@ -178,7 +208,7 @@ const ShoppingPage = () => {
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
                     <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                      Sort
+                      Trier par
                       <ChevronDownIcon
                         className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                         aria-hidden="true"
@@ -202,6 +232,10 @@ const ShoppingPage = () => {
                             {({ active }) => (
                               <a
                                 href={option.href}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  option.sortFunction();
+                                }}
                                 className={classNames(
                                   option.current ? 'font-medium text-gray-900' : 'text-gray-500',
                                   active ? 'bg-gray-100' : '',
@@ -218,7 +252,11 @@ const ShoppingPage = () => {
                   </Transition>
                 </Menu>
 
-                <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+                <button
+                  type="button"
+                  className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+                  onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+                >
                   <span className="sr-only">View grid</span>
                   <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
                 </button>
@@ -246,25 +284,36 @@ const ShoppingPage = () => {
                     <div>
                       <h2 className="sr-only">Products</h2>
 
-                      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                        {products.map((product) => (
-                          <a
-                            key={product.id}
-                            onClick={() => openModal(product)}
-                            className="group w-full focus:outline-none hover:cursor-pointer"
-                          >
-                            <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                              <img
-                                src={imageUrlFor(product.imageSrc).url()}
-                                alt={product.imageAlt}
-                                className="h-full w-full object-cover object-center group-hover:opacity-75"
-                              />
-                            </div>
-                            <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-                            <p className="mt-1 text-lg font-medium text-gray-900">{product.price}€</p>
-                          </a>
-                        ))}
+                      <div className={`grid grid-cols-1 gap-x-6 gap-y-10 ${viewMode === 'grid' ? 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8' : 'sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-3'}`}>
+                        {filteredProducts.map((product) => {
+                          // Check if the product is already in the cart
+                          const isInCart = cart.some((item) => item.id === product.id);
+
+                          // Skip rendering the product if it's in the cart
+                          if (isInCart) {
+                            return null;
+                          }
+
+                          return (
+                            <a
+                              key={product.id}
+                              onClick={() => openModal(product)}
+                              className="group w-full focus:outline-none hover:cursor-pointer"
+                            >
+                              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                                <img
+                                  src={imageUrlFor(product.imageSrc).url()}
+                                  alt={product.imageAlt}
+                                  className="sm:h-64 w-full object-cover object-center group-hover:opacity-75  rounded-md"
+                                />
+                              </div>
+                              <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
+                              <p className="mt-1 text-lg font-medium text-gray-900">{product.price}€</p>
+                            </a>
+                          );
+                        })}
                       </div>
+
                     </div>
                   </div>
                 </div>

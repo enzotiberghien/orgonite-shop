@@ -1,26 +1,26 @@
 import React from 'react'
+import medaillonImage from '../assets/medaillon.webp';
+import pyramideImage from '../assets/pyramide.webp';
+import domeImage from '../assets/dome.webp';
+import crystauxImage from '../assets/dome.webp';
+
 
 const Collection = () => {
   const products = [
     {
-      imageUrl: 'https://media.istockphoto.com/id/1425317558/photo/carnelian-orgonite-pyramid.jpg?b=1&s=170667a&w=0&k=20&c=g_dr51fxCaKmi0KnRpzu3TX7O-61qxcjVJ0-ic1lAE8=',
+      imageUrl: medaillonImage,
       title: 'Medaillons',
       description: "Une pierre puissante pour la protection et l'amélioration de l'énergie.",
     },
     {
-      imageUrl: 'https://media.istockphoto.com/id/991579270/photo/crystals-and-orgonite.jpg?b=1&s=170667a&w=0&k=20&c=4w7RZeWNQQtojJA8GwVAoh3oLxVyJ5DriHQmcOvJrWM=',
-      title: 'Cotbag',
+      imageUrl: pyramideImage,
+      title: 'Pyramides',
       description: 'Une pierre unique pour la croissance spirituelle et la paix intérieure.',
     },
     {
-      imageUrl: 'https://media.istockphoto.com/id/1425317325/photo/orgonite-carnelian-pyramid-close-up.jpg?b=1&s=170667a&w=0&k=20&c=ad0V_Ysq6r703cctBbEGA69dIFS7uD8IlOS6dbV6ZyY=',
-      title: 'Pyramides',
+      imageUrl: domeImage,
+      title: 'Dômes',
       description: "Une belle pierre pour la guérison émotionnelle et l'équilibre.",
-    },
-    {
-      imageUrl: 'https://media.istockphoto.com/id/1425318325/photo/orgonite-pyramid-and-mala-necklace.jpg?b=1&s=170667a&w=0&k=20&c=oB-su_73zHg1Fsz1Tu9MuY-VQxyHef5t9GYBjXsIKyY=',
-      title: 'Colliers',
-      description: "Une pierre unique pour la croissance spirituelle et la paix intérieure.",
     },
   ];
 
@@ -29,7 +29,7 @@ const Collection = () => {
     <section className="bg-white py-12 px-4 md:px-8">
       <div className="container mx-auto">
         <h2 className="text-2xl md:text-4xl font-bold mb-6">Notre collection d'orgonites</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
           {products.map((product, index) => (
             <div key={index} className="bg-white p-4 rounded-md shadow-md">
               <img
